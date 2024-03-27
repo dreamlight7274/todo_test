@@ -95,7 +95,7 @@ export default function App({ tasks }) {
   const success = (position) => {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    console.log(`the postion of you is ${latitude} and ${longitude}`);
+    console.log(`the position of you is ${latitude} and ${longitude}`);
 
     // setlati(latitude);
     // setlogi(longitude);
@@ -107,6 +107,7 @@ export default function App({ tasks }) {
       latitude: latitude,
       longitude: longitude,
       error: "",
+      mapURL: link
     });
   };
 
@@ -157,7 +158,7 @@ export default function App({ tasks }) {
       id: `todo-${nanoid()}`,
       name,
       completed: false,
-      location: { latitude: "##", longitude: "##", error: "##" },
+      location: { latitude: "##", longitude: "##", error: "##", mapURL: "##" },
       // photo: false,
     };
 

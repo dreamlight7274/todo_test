@@ -59,6 +59,7 @@ function Todo({
 
     const cancelPhoto = (id, imgSrc) => {
       console.log("cancelPhoto", id, imgSrc.length);
+
     };
     return (
       <>
@@ -173,7 +174,7 @@ function Todo({
           {name}
           {/* &nbsp; | la {latitude}
           &nbsp; | lo {longitude} */}
-          <a href="{location.mapURL}">(map)</a>
+          <a href={location.mapURL}>(map)</a>
           &nbsp; | &nbsp;
           <a href="{location.smsURL}">(sms)</a>
         </label>
