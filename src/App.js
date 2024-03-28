@@ -96,6 +96,7 @@ export default function App({ tasks }) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     console.log(`the position of you is ${latitude} and ${longitude}`);
+    const linkcreate = `https://google.com/maps?q=${latitude},${longitude}`;
 
     // setlati(latitude);
     // setlogi(longitude);
@@ -107,7 +108,8 @@ export default function App({ tasks }) {
       latitude: latitude,
       longitude: longitude,
       error: "",
-      mapURL: link
+      mapURL: linkcreate
+      // mapURL: `https://google.com/maps?q=${latitude},${longitude}`
     });
   };
 

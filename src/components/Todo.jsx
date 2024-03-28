@@ -59,6 +59,7 @@ function Todo({
 
     const cancelPhoto = (id, imgSrc) => {
       console.log("cancelPhoto", id, imgSrc.length);
+      setImgSrc(null);
 
     };
     return (
@@ -92,13 +93,14 @@ function Todo({
               Save Photo
             </button>
           )}
-          <button
+          {imgSrc && (<button
             type="button"
             className="btn todo-cancel"
             onClick={() => cancelPhoto(id, imgSrc)}
           >
             Cancel
-          </button>
+          </button>)
+          }
         </div>
       </>
     );
