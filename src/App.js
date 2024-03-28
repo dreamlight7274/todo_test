@@ -161,7 +161,7 @@ export default function App({ tasks }) {
       name,
       completed: false,
       location: { latitude: "##", longitude: "##", error: "##", mapURL: "##" },
-      // photo: false,
+      photo: false,
     };
 
     // todo- and a random id
@@ -198,6 +198,7 @@ export default function App({ tasks }) {
       // latitude={task.location.latitude}
       // longitude={task.location.longitude}
       location={task.location}
+      photo={task.photo}
       toggleTaskCompleted={toggleTaskCompleted}
       photoedTask={photoedTask}
       deleteTask={deleteTask}

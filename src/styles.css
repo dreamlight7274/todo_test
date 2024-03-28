@@ -96,6 +96,11 @@ body {
   border-color: #bd2130;
   color: #fff;
 }
+.btn__nophoto {
+  background-color: #d3d3d3;
+  border-color: #d3d3d3;
+  color: #000;
+}
 .btn__filter {
   border-color: lightgrey;
 }

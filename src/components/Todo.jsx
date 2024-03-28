@@ -13,6 +13,7 @@ function Todo({
   // latitude,
   // longitude,
   location,
+  photo,
   photoedTask,
   deleteTask,
   editTask,
@@ -117,6 +118,18 @@ function Todo({
       </>
     );
   };
+// the button to view the photo
+    const viewphotoButton = photo ? (
+    <button type="button" className="btn">
+      {" "}
+      View Photo{" "}
+    </button>
+  ) : (
+    <button type="button" className="btn_nophoto" disabled>
+      {" "}
+      No Photo{" "}
+    </button>
+  );
   function handleCancel() {
     setEditing(false);
     setNewName("");
@@ -203,12 +216,13 @@ function Todo({
         </Popup>
 
         <Popup
-          trigger={
-            <button type="button" className="btn">
-              {" "}
-              View Photo{" "}
-            </button>
-          }
+          // trigger={
+          //   <button type="button" className="btn">
+          //     {" "}
+          //     View Photo{" "}
+          //   </button>
+          // }
+          trigger={viewphotoButton}
           modal
         >
           {/* modal: unless close the screen the user can't do anything on the other screen */}
