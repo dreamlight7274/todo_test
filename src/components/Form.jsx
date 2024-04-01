@@ -5,7 +5,7 @@ import SpeechRecognition from "react-speech-recognition";
 
 function SpeechRecoginizecreate() {
   const { transcript, resetTranscript } = useSpeechRecognition();
-  const [recognitionResult, setRecognitionResult] = useState("");
+  const [recognitionResult, setRecognitionResult] = useState(null);
 
   const startListen = () => {
     if (window.hasOwnProperty("webkitSpeechRecognition")) {
