@@ -5,7 +5,8 @@ import { nanoid } from "nanoid";
 import Todo from "./components/Todo";
 import FilterButton from "./components/FilterButton";
 import Form from "./components/Form";
-// import locateonetime from "./components/Locateonetime";
+import schedule from "node-schedule";
+
 
 // ?: check, none return "undefined"
 
@@ -117,6 +118,176 @@ export default function App({ tasks }) {
     setStatus("Unable to retrieve your location");
   };
 
+  function testNoti() {
+    console.log("test noti");
+    if ("Notification" in window) {
+      console.log("The browser supports notifications");
+      Notification.requestPermission()
+        .then((permission) => {
+          if (permission === "granted") {
+            console.log(
+              "The browser has got the permission to send notifications"
+            );
+            // new Notification("deadline alarm", {
+            //   body: `Task '${task.name}' will be due in 5 minutes`,
+            // });
+            new Notification("Notification test success");
+          }
+          if (permission === "denied") {
+            console.log("User denied the permission to send notifications");
+            // new Notification("deadline alarm", {
+            //   body: `Task '${task.name}' will be due in 5 minutes`,
+            // });
+          }
+        })
+        .catch((error) => {
+          console.error("System can't request permission:", error);
+        });
+    }
+  }
+  //
+
+  // tasks solved
+
+  function handleNotifications() {
+    const addNotiTasks = savtasks.map((task) => {
+      if (task.deadline) {
+        const deadlineTime = new Date(task.deadline);
+        const notificationTime = new Date(
+          deadlineTime.getTime() - 5 * 60 * 1000
+        );
+        console.log("deadline", deadlineTime.toString());
+        console.log("notificationTime", notificationTime.toString());
+        const notificationJob = schedule.scheduleJob(
+          task.id,
+          notificationTime,
+
+          function () {
+            //   // if (
+            //   //   "Notification" in window &&
+            //   //   Notification.permission === "granted"
+            //   // ) {
+            //   // , {
+            //   //   body: `Task '${task.name}' will be due in 5 minutes`,
+            //   // }
+            //   // const notification =
+            // new Notification("deadline alarm");
+            console.log("notification sent");
+            new Notification("deadline alarm", {
+              body: `Task '${task.name}' will be due in 5 minutes`,
+            });
+            // test can't be used inside the function
+
+            //   // }
+            // if (!("Notification" in window)) {
+            //   // no service
+            //   // alert("the browser does not support notifications");
+            //   console.log("the browser does not support notifications");
+            // } else if (Notification.permission === "granted") {
+            //   // OK, The browser has got the permission to send notifications
+            //   const notification = new Notification("deadline alarm", {
+            //     body: `Task '${task.name}' will be due in 5 minutes`,
+            //   });
+            // } else if (Notification.permission !== "denied") {
+            //   // try get the permission
+            //   Notification.requestPermission().then((permission) => {
+            //     if (permission === "granted") {
+            //       const notification = new Notification("deadline alarm", {
+            //         body: `Task '${task.name}' will be due in 5 minutes`,
+            //       });
+            //     }
+            //   });
+            // }
+
+            //   console.log(
+            //     `Notification for task '${task.name}' will be sent in the suitable time.`
+            //   );
+          }
+        );
+        // task.notiScheduleID = 1;
+        return { ...task, notiScheduleID: task.id };
+      }
+      return task;
+    });
+    setTasks(addNotiTasks);
+    localStorage.setItem("tasks", JSON.stringify(addNotiTasks));
+    new Notification("notification is activated", {
+      body: "The Notification will be published 5 minutes before the task's deadline",
+    });
+  }
+
+  function cancelNotifications() {
+    const cancelNotiTasks = savtasks.map((task) => {
+      if (task.notiScheduleID) {
+        schedule.cancelJob(task.notiScheduleID);
+        console.log("notification job of ", task.name, " canceled");
+
+        // task.notiScheduleID = 1;
+        return { ...task, notiScheduleID: null };
+      }
+      return task;
+    });
+    setTasks(cancelNotiTasks);
+    localStorage.setItem("tasks", JSON.stringify(cancelNotiTasks));
+    new Notification("notification is canceled", {
+      body: "The tasks of notification has been canceled",
+    });
+  }
+
+  // useEffect(() => {
+  //   const intervaljob = setInterval(() => {
+  //     checkDeadline();
+  //   }, 1000000); // check every one minutes
+
+  //   return () => clearInterval(intervaljob);
+  //   // no element, no interval job
+  // }, []);
+
+  // function checkDeadline() {
+  //   const currentTime = new Date();
+
+  //   // const maychangedTaskList = savtasks.map((task) => {
+  //   //   // if this task has the same ID as the edited task
+  //   //   if (task.deadline !== null) {
+  //   //     timeRemaining = task.deadline - currentTime;
+  //   //     console.log("timeRemaining", timeRemaining.toString());
+  //   //     if (timeRemaining === 900000) {
+  //   //       console.log("Task", task.name, "will be due in 15 minutes");
+  //   //     }
+  //   //     // Copy the task and update its name
+  //   //     return task;
+  //   //   }
+  //   //   // Return the original task if it's not the edited task
+  //   //   return task;
+  //   // });
+  //   savtasks.forEach((task) => {
+  //     if (task.deadline !== null) {
+  //       const changeddeadline = new Date(task.deadline);
+  //       console.log(changeddeadline.toString());
+  //       console.log(currentTime.toString());
+  //       const timeRemaining = changeddeadline - currentTime;
+  //       console.log("timeRemaining", timeRemaining.toString());
+  //       if (timeRemaining < 900000) {
+  //         console.log("Task", task.name, "will be due in 15 minutes");
+  //       }
+  //     }
+  //   });
+  //   // const mayupdatetasks = savtasks;
+  //   // mayupdatetasks.forEach((task) => {
+  //   //   if (task.deadline !== null) {
+  //   //     timeRemaining = task.deadline - currentTime;
+  //   //     if (timeRemaining < 900000 && task.ifalarm === false) {
+  //   //       console.log("Task", task.name, "will be due in 15 minutes");
+  //   //       task.ifalarm = true;
+  //   //     }
+  //   //   }
+  //   // });
+  //   // doesn't work because it lead to one savtasks
+  //   // setTasks(maychangedTaskList);
+  //   // becaus usestate is asynchronous, react will  combine the similar jobs
+  //   // localStorage.setItem("tasks", JSON.stringify(maychangedTaskList));
+  //   console.log("detect checking deadline");
+  // }
   // tasks solved
 
   function toggleTaskCompleted(id) {
@@ -148,7 +319,19 @@ export default function App({ tasks }) {
 
   function deleteTask(id) {
     // console.log(id);
-    const remainingTasks = savtasks.filter((task) => id !== task.id);
+    const cancelOneNotiTasks = savtasks.map((task) => {
+      if (task.id === id && task.notiScheduleID) {
+        schedule.cancelJob(task.notiScheduleID);
+        console.log("notification job of ", task.name, " canceled");
+
+        // task.notiScheduleID = 1;
+        return { ...task, notiScheduleID: null };
+      }
+      return task;
+    });
+
+    // console.log(id);
+    const remainingTasks = cancelOneNotiTasks.filter((task) => id !== task.id);
     setTasks(remainingTasks);
     // leave the tasks with the different id
     localStorage.setItem("tasks", JSON.stringify(remainingTasks));
@@ -162,6 +345,8 @@ export default function App({ tasks }) {
       completed: false,
       location: { latitude: "##", longitude: "##", error: "##", mapURL: "##" },
       photo: false,
+      deadline: null,
+      notiScheduleID: null,
     };
 
     // todo- and a random id
@@ -189,20 +374,59 @@ export default function App({ tasks }) {
     // localStorage.setItem("tasks", JSON.stringify(photoedTaskList));
     // miss in the lab, it should be saved in the localStorage
   }
+
+    function addDeadline(id, date) {
+    console.log("task added deadline", id);
+    const deadlineTaskList = savtasks.map((task) => {
+      // if this task has the same ID as the edited task
+      if (id === task.id) {
+        return { ...task, deadline: date };
+      }
+      return task;
+    });
+    console.log(deadlineTaskList);
+    setTasks(deadlineTaskList);
+  }
+
+  function deleteDeadline(id) {
+    console.log("task deleted deadline", id);
+    const deadlineDeletedTaskList = savtasks.map((task) => {
+      // if this task has the same ID as the edited task
+      if (id === task.id) {
+        if (task.notiScheduleID) {
+          schedule.cancelJob(task.notiScheduleID);
+          console.log("notification job of ", task.name, " canceled");
+
+          // task.notiScheduleID = 1;
+          return { ...task, notiScheduleID: null };
+        }
+
+        return { ...task, deadline: null };
+        console.log("deadline of ", task.name, " canceled");
+      }
+      return task;
+    });
+    console.log(deadlineDeletedTaskList);
+    setTasks(deadlineDeletedTaskList);
+  }
+
   const taskList = savtasks?.filter(FILTER_MAP[filter]).map((task) => (
     <Todo
       id={task.id}
       name={task.name}
       completed={task.completed}
       key={task.id}
-      // latitude={task.location.latitude}
-      // longitude={task.location.longitude}
+      latitude={task.location.latitude}
+      longitude={task.location.longitude}
       location={task.location}
       photo={task.photo}
+      deadline={task.deadline}
       toggleTaskCompleted={toggleTaskCompleted}
       photoedTask={photoedTask}
       deleteTask={deleteTask}
       editTask={editTask}
+      addDeadline={addDeadline}
+      deleteDeadline={deleteDeadline}
     />
   ));
   const filterList = FILTER_NAMES.map((name) => (
@@ -271,6 +495,24 @@ export default function App({ tasks }) {
         <FilterButton />
         <FilterButton /> */}
         {filterList}
+      </div>
+      <div className="btn-group">
+        <button type="button" className="btn" onClick={testNoti}>
+          {" "}
+          test Notification{" "}
+        </button>
+        <button type="button" className="btn" onClick={handleNotifications}>
+          {" "}
+          Set Notification{" "}
+        </button>
+        <button
+          type="button"
+          className="btn__danger"
+          onClick={cancelNotifications}
+        >
+          {" "}
+          close Notification{" "}
+        </button>
       </div>
       <h2 id="list-heading">{headingText}</h2>
       <ul

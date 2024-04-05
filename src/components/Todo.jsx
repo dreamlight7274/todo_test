@@ -4,21 +4,27 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import Webcam from "react-webcam";
 import { addPhoto, GetPhotoSrc } from "../db";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function Todo({
   name,
   completed = false,
   id,
   toggleTaskCompleted,
-  // latitude,
-  // longitude,
+  latitude,
+  longitude,
   location,
   photo,
+  deadline,
   photoedTask,
   deleteTask,
   editTask,
+  addDeadline,
+  deleteDeadline,
 }) {
-  const [isEditing, setEditing] = useState(false);
+  // const [isEditing, setEditing] = useState(false);
+  const [mode, setMode] = useState(0);
   const [newName, setNewName] = useState("");
   function handleChange(event) {
     setNewName(event.target.value);
@@ -131,16 +137,78 @@ function Todo({
     </button>
   );
   function handleCancel() {
-    setEditing(false);
+    setMode(0);
     setNewName("");
+  }
+    function handleClockview() {
+    setMode(2);
+  }
+    function backDefault() {
+    setMode(0);
+    // setsavDeadline(null);
   }
   function handleSubmit(event) {
     event.preventDefault();
     editTask(id, newName);
     // clean "new name"
     setNewName("");
-    setEditing(false);
+    setMode(0);
   }
+    const DeadlineDesign = ({ id }) => {
+    // console.log(deadline);
+    console.log(id);
+    const [savdeadline, setsavDeadline] = useState(new Date());
+    const [isSaveddeadline, setIsSaveddeadline] = useState(false);
+    // const saveDeadlineRef = useRef();
+
+    // const saveDeadline = useCallback(() => {
+    //   addDeadline(id, savdeadline);
+    //   setIsSaveddeadline(true);
+    // }, [id]);
+    const saveDeadline = () => {
+      const finalsavedeadline = savdeadline.toString();
+      addDeadline(id, finalsavedeadline);
+      setIsSaveddeadline(true);
+    };
+    // const saveDeadline = useCallback(() => {
+    //   addDeadline(id, savdeadline);
+    //   setIsSaveddeadline(true);
+    // }, [id]);
+
+    // saveDeadlineRef.current = saveDeadline;
+
+    // const handleSaveDeadlineClick = () => {
+    //   saveDeadlineRef.current();
+    // };
+    return (
+      <>
+        <DatePicker
+          selected={savdeadline}
+          onChange={(date) => setsavDeadline(date)}
+          // locale="en-GB"
+          showTimeSelect
+          timeFormat="HH:mm"
+          timeIntervals={1}
+          dateFormat="dd/MM/yyyy, HH:mm"
+        />
+        <div className="btn-group">
+          {isSaveddeadline === false ? (
+            <button type="button" className="btn" onClick={saveDeadline}>
+              Save Deadline
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn__addedtime"
+              onClick={saveDeadline}
+            >
+              Successfully!
+            </button>
+          )}
+        </div>
+      </>
+    );
+  };
   const editingTemplate = (
     <form className="stack-small" onSubmit={handleSubmit}>
       <div className="form-group">
@@ -187,18 +255,32 @@ function Todo({
         />
         <label className="todo-label" htmlFor={id}>
           {name}
+          &nbsp; | la {latitude}
+          &nbsp; lo {longitude}
+          &nbsp; | &nbsp;
+          <a href={location.mapURL}>(map)</a>
           {/* &nbsp; | la {latitude}
           &nbsp; | lo {longitude} */}
-          <a href={location.mapURL}>(map)</a>
-          &nbsp; | &nbsp;
-          <a href="{location.smsURL}">(sms)</a>
+          {/*<a href={location.mapURL}>(map)</a>*/}
+          {/*&nbsp; | &nbsp;*/}
+          {/*<a href="{location.smsURL}">(sms)</a>*/}
         </label>
+        {deadline !== null ? (
+          <label className="todo-label" htmlFor={id}>
+            {/* Deadline: {deadline.toString()} */}
+            Deadline: {deadline}
+          </label>
+        ) : (
+          <label className="todo-label" htmlFor={id}>
+            (No deadline)
+          </label>
+        )}
       </div>
       <div className="btn-group">
         {/* <button type="button" className="btn">
           Edit <span className="visually-hidden">{name}</span>
         </button> */}
-        <button type="button" className="btn" onClick={() => setEditing(true)}>
+        <button type="button" className="btn" onClick={() => setMode(1)}>
           Edit <span className="visually-hidden">{name}</span>
         </button>
         <Popup
@@ -238,6 +320,82 @@ function Todo({
           Delete <span className="visually-hidden">{name}</span>
         </button>
       </div>
+      <div className="btn-group">
+        <button type="button" className="btn" onClick={() => handleClockview()}>
+          Notification <span className="visually-hidden">{name}</span>
+        </button>
+      </div>
+    </div>
+  );
+    const alarmTemplate = (
+    <div className="stack-small">
+      {/* <SpeechRecoginizecreate /> */}
+      <div className="c-cb">
+        <input
+          id={id}
+          type="checkbox"
+          defaultChecked={completed}
+          onChange={() => toggleTaskCompleted(id)}
+        />
+        <label className="todo-label" htmlFor={id}>
+          {name}
+          {/* <a href={`https://www.google.com/maps/@${latitude},${longitude}`}>
+            &nbsp; | la {latitude}
+            &nbsp; | lo {longitude}
+          </a> */}
+          {/* {location.mapURL} */}
+          &nbsp; | la {latitude}
+          &nbsp; lo {longitude}
+          &nbsp; | &nbsp;
+          <a href={location.mapURL}>(map)</a>
+          {/* &nbsp; | &nbsp; */}
+          {/* <a href="{location.smsURL}">(sms)</a> */}
+        </label>
+        <label className="todo-label" htmlFor={id}>
+          {/* Deadline: {deadline.toString()} */}
+          {deadline !== null ? (
+            <label className="todo-label" htmlFor={id}>
+              {/* Deadline: {deadline.toString()} */}
+              Deadline: {deadline}
+            </label>
+          ) : (
+            <label className="todo-label" htmlFor={id}>
+              (No deadline)
+            </label>
+          )}
+        </label>
+      </div>
+      <div className="btn-group">
+        {/* <button type="button" className="btn">
+          Edit <span className="visually-hidden">{name}</span>
+        </button> */}
+        <Popup
+          trigger={
+            <button type="button" className="btn">
+              {" "}
+              set Deadline{" "}
+            </button>
+          }
+          modal
+        >
+          <div>
+            <DeadlineDesign id={id} photoedTask={photoedTask} />
+          </div>
+        </Popup>
+
+        <button
+          type="button"
+          className="btn btn__danger"
+          onClick={() => deleteDeadline(id)}
+        >
+          Delete Deadline<span className="visually-hidden">{name}</span>
+        </button>
+      </div>
+      <div className="btn-group">
+        <button type="button" className="btn" onClick={() => backDefault()}>
+          Back <span className="visually-hidden">{name}</span>
+        </button>
+      </div>
     </div>
   );
   // return (
@@ -267,7 +425,20 @@ function Todo({
   //     </div>
   //   </li>
   // );
-  return <li className="todo">{isEditing ? editingTemplate : viewTemplate}</li>;
+  // return <li className="todo">{isEditing ? editingTemplate : viewTemplate}</li>;
+    return (
+    <li className="todo">
+      {(() => {
+        if (mode === 1) {
+          return editingTemplate;
+        } else if (mode === 0) {
+          return viewTemplate;
+        } else if (mode === 2) {
+          return alarmTemplate;
+        }
+      })()}
+    </li>
+          );
 }
 
 export default Todo;
