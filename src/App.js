@@ -118,6 +118,26 @@ export default function App({ tasks }) {
     setStatus("Unable to retrieve your location");
   };
 
+  function drag(e, id) {
+  e.dataTransfer.setData("text", id);
+}
+function allowDrop(e) {
+  e.preventDefault();
+}
+
+function drop(e) {
+  e.preventDefault();
+  const taskId = e.dataTransfer.getData("text");
+
+  const taskElement = document.getElementById(taskId);
+
+  // remove the element from original space
+  taskElement.remove();
+
+  // drop the data to target space
+  const dropArea = document.getElementById('div1');
+  dropArea.appendChild(taskElement);
+}
   function testNoti() {
     console.log("test noti");
     if ("Notification" in window) {
@@ -411,6 +431,11 @@ export default function App({ tasks }) {
   }
 
   const taskList = savtasks?.filter(FILTER_MAP[filter]).map((task) => (
+    <div
+      id={task.id+"-d"}
+      draggable="true"
+      onDragStart={(e) => drag(e, task.id+"-d")}
+    >
     <Todo
       id={task.id}
       name={task.name}
@@ -428,6 +453,7 @@ export default function App({ tasks }) {
       addDeadline={addDeadline}
       deleteDeadline={deleteDeadline}
     />
+    </div>
   ));
   const filterList = FILTER_NAMES.map((name) => (
     // <FilterButton key={name} name={name} />
@@ -449,7 +475,12 @@ export default function App({ tasks }) {
     // </div>
 
     <div className="todoapp stack-large">
-      <h1>TodoMatic</h1>
+      <h1>Todo-List ++</h1>
+       <label className="label__lg">
+          What is necessary
+        </label>
+
+<div id="div1" className="drop-area" onDrop={(e) => drop(e)} onDragOver={(e) => allowDrop(e)}></div>
       {/* <ul
         role="list"
         className="todo-list stack-large stack-exception"
