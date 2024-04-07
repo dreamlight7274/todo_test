@@ -6,6 +6,7 @@ import Todo from "./components/Todo";
 import FilterButton from "./components/FilterButton";
 import Form from "./components/Form";
 import schedule from "node-schedule";
+import GyroscopeScroll from "./components/GyroscopeScroll";
 
 
 // ?: check, none return "undefined"
@@ -545,6 +546,9 @@ function drop(e) {
           {" "}
           close Notification{" "}
         </button>
+      </div>
+      <div>
+        <GyroscopeScroll />
       </div>
       <h2 id="list-heading">{headingText}</h2>
       <ul
