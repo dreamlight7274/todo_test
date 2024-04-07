@@ -140,6 +140,7 @@ function drop(e) {
 }
   function testNoti() {
     console.log("test noti");
+    // may be need an approach to use sms
     if ("Notification" in window) {
       console.log("The browser supports notifications");
       Notification.requestPermission()
