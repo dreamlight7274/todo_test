@@ -36,5 +36,14 @@ function GetPhotoSrc(id) {
   }
   //   if that's is an array, the system find at least one line of data
 }
+async function deletePhoto(id) {
+  console.log("deletePhoto", id);
+  try {
+    await db.photos.where("id").equals(id).delete();
+    console.log(`Photo ${id} successfully deleted`);
+  } catch (error) {
+    console.log(`Fail to delete photo ${id}: ${error}`);
+  }
+}
 
-export { addPhoto, GetPhotoSrc };
+export { addPhoto, GetPhotoSrc, deletePhoto };

@@ -71,7 +71,7 @@ function Todo({
     };
     return (
       <>
-        {!imgSrc && ( // before take a photo, camera will give a live vedio
+        {!imgSrc && ( // before take a photo, camera will give a live video
           <Webcam
             audio={false}
             ref={webcamRef}

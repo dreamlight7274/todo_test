@@ -6,6 +6,7 @@ import Todo from "./components/Todo";
 import FilterButton from "./components/FilterButton";
 import Form from "./components/Form";
 import schedule from "node-schedule";
+import { deletePhoto } from "./db";
 
 
 
@@ -342,6 +343,10 @@ function drop(e) {
   function deleteTask(id) {
     // console.log(id);
     const cancelOneNotiTasks = savtasks.map((task) => {
+      if (task.id === id && task.photo === true) {
+        deletePhoto(task.id)
+        console.log("photo in the database has been deleted")
+      }
       if (task.id === id && task.notiScheduleID) {
         schedule.cancelJob(task.notiScheduleID);
         console.log("notification job of ", task.name, " canceled");
