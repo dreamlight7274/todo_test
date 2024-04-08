@@ -17,7 +17,7 @@ function SpeechRecoginizecreate() {
 
       recognition.onresult = (e) => {
         const bestResult = e.results[0][0].transcript;
-        resetTranscript();
+
         console.log("Speech Result:", bestResult);
         // useEffect(() => {
         //   setrecognitionResult(bestResult);
