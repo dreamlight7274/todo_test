@@ -4,8 +4,8 @@ const GyroscopeScroll = () => {
   const [isGyroscope, setGyroscope] = useState(false);
 
   useEffect(() => {
-    const handleOrientation = (orientData) => {
-      const betaData = orientData.beta;
+    const handleOrientationData = (e) => {
+      const betaData = e.beta;
       const modifyData = betaData-55
       if (isGyroscope) {
         window.scrollBy(0, modifyData * 0.5);
@@ -19,7 +19,7 @@ const GyroscopeScroll = () => {
         DeviceOrientationEvent.requestPermission()
           .then((permissionStatus) => {
             if (permissionStatus === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation, true);
+              window.addEventListener('deviceorientation', handleOrientationData, true);
             }
             else{
               console.log("The user declined the request")
@@ -31,9 +31,9 @@ const GyroscopeScroll = () => {
         // browser doesn't support that
       }
     }
-
+//
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation, true);
+      window.removeEventListener('deviceorientation', handleOrientationData, true);
     };
   }, [isGyroscope]);
 
