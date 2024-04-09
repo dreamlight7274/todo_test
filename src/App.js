@@ -129,9 +129,9 @@ function allowDrop(e) {
 
 function drop(e) {
   e.preventDefault();
-  const taskId = e.dataTransfer.getData("text");
+  const taskElementId = e.dataTransfer.getData("text");
 
-  const taskElement = document.getElementById(taskId);
+  const taskElement = document.getElementById(taskElementId);
 
   // remove the element from original space
   taskElement.remove();
