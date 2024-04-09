@@ -554,6 +554,7 @@ function drop(e) {
           close Notification{" "}
         </button>
       </div>
+      <p>The notification system is currently working only on the PC browsers</p>
 
       <h2 id="list-heading">{headingText}</h2>
       <ul
