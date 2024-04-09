@@ -6,8 +6,9 @@ const GyroscopeScroll = () => {
   useEffect(() => {
     const handleOrientation = (orientData) => {
       const betaData = orientData.beta;
+      const modifyData = betaData-65
       if (isGyroscope) {
-        window.scrollBy(0, betaData * 0.5);
+        window.scrollBy(0, modifyData * 0.5);
       }
     };
 
