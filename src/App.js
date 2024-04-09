@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import Todo from "./components/Todo";
 import FilterButton from "./components/FilterButton";
 import Form from "./components/Form";
+import GyroscopeScroll from "./components/GyroscopeScroll";
 import schedule from "node-schedule";
 import { deletePhoto } from "./db";
 
@@ -483,6 +484,7 @@ function drop(e) {
 
     <div className="todoapp stack-large">
       <h1>Todo-List ++</h1>
+      <GyroscopeScroll />
        <label className="label__lg">
           What is necessary
         </label>

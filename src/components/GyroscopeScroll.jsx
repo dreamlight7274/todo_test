@@ -1,47 +1,49 @@
 import React, { useState, useEffect } from 'react';
 
 const GyroscopeScroll = () => {
-  const [gyroscopeEnabled, setGyroscopeEnabled] = useState(false);
+  const [isGyroscope, setGyroscope] = useState(false);
 
   useEffect(() => {
-    const handleOrientation = (event) => {
-      const { beta } = event;
-      if (gyroscopeEnabled) {
-        window.scrollBy(0, beta * 0.5);
+    const handleOrientation = (orientData) => {
+      const betaData = orientData.beta;
+      if (isGyroscope) {
+        window.scrollBy(0, betaData * 0.5);
       }
     };
 
-    if (gyroscopeEnabled) {
-      // 请求陀螺仪权限
+    if (isGyroscope) {
+      // if the browser support DeviceOrientationEvent
       if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // try to get the permission of DeviceOrientationEvent
         DeviceOrientationEvent.requestPermission()
           .then((permissionStatus) => {
             if (permissionStatus === 'granted') {
               window.addEventListener('deviceorientation', handleOrientation, true);
             }
+            else{
+              console.log("The user declined the request")
+            }
           })
           .catch(console.error);
       } else {
-        // 浏览器不支持请求权限
-        window.addEventListener('deviceorientation', handleOrientation, true);
+        console.log("the browser don't support DeviceOrientationEvent")
+        // browser doesn't support that
       }
     }
 
     return () => {
       window.removeEventListener('deviceorientation', handleOrientation, true);
     };
-  }, [gyroscopeEnabled]);
+  }, [isGyroscope]);
 
   const toggleGyroscope = () => {
-    setGyroscopeEnabled(!gyroscopeEnabled);
+    setGyroscope(!isGyroscope);
   };
 
   return (
-    <div>
-      <h1>使用陀螺仪滚动页面</h1>
-      <p>试试移动你的设备来滚动页面！</p>
-      <button onClick={toggleGyroscope}>
-        {gyroscopeEnabled ? '关闭陀螺仪' : '打开陀螺仪'}
+    <div className="btn-group">
+      <button onClick={toggleGyroscope} className="btn">
+        {isGyroscope ? 'Close Gyroscope' : 'Open Gyroscope'}
       </button>
     </div>
   );
